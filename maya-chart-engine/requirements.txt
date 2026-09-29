@@ -1,0 +1,5 @@
+pysweph==2.10.3.6
+mcp==1.30.0
+fastapi==0.141.1
+uvicorn==0.54.0
+tzdata==2026.4
