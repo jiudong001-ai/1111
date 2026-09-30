@@ -150,15 +150,35 @@ app.add_middleware(RequestGuards)
 
 @app.get('/', response_class=HTMLResponse)
 def home():
-    return f'''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Maya Chart Engine</title><style>body{{background:#111326;color:#eee9ff;font:18px/1.65 system-ui;max-width:760px;margin:10vh auto;padding:24px}}a{{color:#d3b7ff}}h1{{font-size:42px;line-height:1.15}}small{{color:#c0bbd4}}code{{color:#f1d5a3}}</style>
-    <p>✦ MAYA · ASTROLOGY CALCULATIONS</p><h1>Maya Chart Engine</h1>
-    <p>Natal charts, relationship charts and transits, calculated from verified birth information.</p>
-    <p><a href="/docs">Try the API</a> · <a href="/health">Service health</a> · <a href="{SOURCE}">Source &amp; license</a></p>
-    <p>MCP connection: <code>/mcp</code></p>
-    <small>Tropical zodiac · Swiss Ephemeris / Moshier · No birth data saved by this application.<br>
-    Unknown birth times never produce invented houses or an Ascendant. Astrology is interpretive and does not establish another person's feelings or predict certain events.<br>
-    This is a public calculator. Your hosting provider and connecting client may process request metadata. AGPL-3.0-or-later.</small></html>'''
+    from pathlib import Path
+    return HTMLResponse(Path(__file__).with_name('web.html').read_text(encoding='utf-8'),
+                        headers={'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff',
+                                 'Referrer-Policy': 'no-referrer'})
+
+
+from functools import lru_cache
+from fastapi import Query
+
+
+@lru_cache(maxsize=1)
+def city_catalog():
+    import geonamescache
+    gc = geonamescache.GeonamesCache()
+    countries = gc.get_countries()
+    return [(c, ' '.join([c['name'], *c.get('alternatenames', [])]).casefold(),
+             countries[c['countrycode']]['name']) for c in gc.get_cities().values()]
+
+
+@app.get('/api/cities')
+def cities(q: str = Query(min_length=2, max_length=80)):
+    query = q.strip().casefold()
+    if len(query) < 2:
+        return []
+    matches = [row for row in city_catalog() if query in row[1]]
+    matches.sort(key=lambda row: (row[0]['name'].casefold() != query, -row[0]['population']))
+    return [{'place': f"{c['name']}, {country} ({c['admin1code']})",
+             'latitude': c['latitude'], 'longitude': c['longitude'],
+             'timezone': c['timezone']} for c, _, country in matches[:20]]
 
 
 @app.get('/health')
