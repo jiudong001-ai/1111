@@ -13,6 +13,8 @@ def test_us_city_selection_calculates_without_manual_coordinates():
     city = next(row for row in rows if row['name'] == 'New York City')
     assert city['name_zh'] == '纽约市'
     assert city['state_name_zh'] == '纽约州'
+    assert next(row for row in client.get('/api/cities?state=NY&q=纽约').json()
+                if row['name'] == 'New York City')['name_zh'] == '纽约市'
     assert city['timezone'] == 'America/New_York'
     birth = {key: city[key] for key in ['latitude', 'longitude', 'timezone', 'place']}
     birth.update(birth_date='2000-01-01', birth_time='12:00')
