@@ -207,13 +207,15 @@ def city_catalog():
         if c['countrycode'] != 'US' or not c.get('timezone'):
             continue
         state = c['admin1code']
+        name_zh = chinese_city_name(c)
         rows.append({'id': str(c['geonameid']), 'name': c['name'],
-                     'name_zh': chinese_city_name(c), 'state': state,
+                     'name_zh': name_zh, 'state': state,
                      'state_name': states.get(state, {}).get('name', state),
                      'state_name_zh': STATE_NAMES_ZH.get(state, ''),
                      'place': f"{c['name']}, {state}, USA", 'latitude': c['latitude'],
                      'longitude': c['longitude'], 'timezone': c['timezone'],
-                     '_search': ' '.join([c['name'], *c.get('alternatenames', [])]).casefold()})
+                     '_search': ' '.join([c['name'], name_zh,
+                                          *c.get('alternatenames', [])]).casefold()})
     return sorted(rows, key=lambda c: (c['state_name'], c['name']))
 
 
