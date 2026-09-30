@@ -163,22 +163,35 @@ from fastapi import Query
 @lru_cache(maxsize=1)
 def city_catalog():
     import geonamescache
-    gc = geonamescache.GeonamesCache()
-    countries = gc.get_countries()
-    return [(c, ' '.join([c['name'], *c.get('alternatenames', [])]).casefold(),
-             countries[c['countrycode']]['name']) for c in gc.get_cities().values()]
+    gc = geonamescache.GeonamesCache(min_city_population=1000)
+    states = gc.get_us_states()
+    rows = []
+    for c in gc.get_cities().values():
+        if c['countrycode'] != 'US' or not c.get('timezone'):
+            continue
+        state = c['admin1code']
+        rows.append({'id': str(c['geonameid']), 'name': c['name'],
+                     'state': state, 'state_name': states.get(state, {}).get('name', state),
+                     'place': f"{c['name']}, {state}, USA", 'latitude': c['latitude'],
+                     'longitude': c['longitude'], 'timezone': c['timezone'],
+                     '_search': ' '.join([c['name'], *c.get('alternatenames', [])]).casefold()})
+    return sorted(rows, key=lambda c: (c['state_name'], c['name']))
+
+
+@app.get('/api/states')
+def states():
+    return [{'code': code, 'name': name} for code, name in
+            sorted({(c['state'], c['state_name']) for c in city_catalog()}, key=lambda x: x[1])]
 
 
 @app.get('/api/cities')
-def cities(q: str = Query(min_length=2, max_length=80)):
+def cities(q: str = Query(default='', max_length=80), state: str = Query(default='', max_length=2)):
     query = q.strip().casefold()
-    if len(query) < 2:
+    if not state and len(query) < 2:
         return []
-    matches = [row for row in city_catalog() if query in row[1]]
-    matches.sort(key=lambda row: (row[0]['name'].casefold() != query, -row[0]['population']))
-    return [{'place': f"{c['name']}, {country} ({c['admin1code']})",
-             'latitude': c['latitude'], 'longitude': c['longitude'],
-             'timezone': c['timezone']} for c, _, country in matches[:20]]
+    matches = [c for c in city_catalog() if (not state or c['state'] == state.upper())
+               and (not query or query in c['_search'])]
+    return [{k: v for k, v in c.items() if not k.startswith('_')} for c in matches]
 
 
 @app.get('/health')
