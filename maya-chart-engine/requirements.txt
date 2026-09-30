@@ -3,3 +3,4 @@ mcp==1.30.0
 fastapi==0.141.1
 uvicorn==0.54.0
 tzdata==2026.4
+geonamescache==3.0.2
