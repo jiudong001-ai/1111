@@ -7,10 +7,12 @@ def test_us_city_selection_calculates_without_manual_coordinates():
     client = TestClient(app)
     states = client.get('/api/states').json()
     assert len(states) == 51
-    assert {'code': 'NY', 'name': 'New York'} in states
+    assert {'code': 'NY', 'name': 'New York', 'name_zh': '纽约州'} in states
     rows = client.get('/api/cities?state=NY').json()
     assert all(row['state'] == 'NY' and row['place'].endswith('USA') for row in rows)
     city = next(row for row in rows if row['name'] == 'New York City')
+    assert city['name_zh'] == '纽约市'
+    assert city['state_name_zh'] == '纽约州'
     assert city['timezone'] == 'America/New_York'
     birth = {key: city[key] for key in ['latitude', 'longitude', 'timezone', 'place']}
     birth.update(birth_date='2000-01-01', birth_time='12:00')
