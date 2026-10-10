@@ -15,7 +15,7 @@ import httpx
 
 ROOT=Path(__file__).parent
 EXPORTS=Path(os.environ.get('EXPORT_DIR',str(ROOT/'exports')));EXPORTS.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='Evelyn Brooks Astrology Studio')
+app=FastAPI(title='Astrology Consultation Workbench')
 app.mount('/exports',StaticFiles(directory=EXPORTS),name='exports')
 LOCK=asyncio.Lock()
 class Intake(BaseModel):text:str=Field(max_length=20000)
@@ -53,7 +53,7 @@ def health():return {'status':'ok'}
 def source():
     archive=ROOT/'source.zip'
     if not archive.exists():raise HTTPException(503,'Source archive is not built')
-    return FileResponse(archive,filename='Evelyn-Corresponding-Source.zip',media_type='application/zip')
+    return FileResponse(archive,filename='Astrology-Corresponding-Source.zip',media_type='application/zip')
 @app.get('/',response_class=HTMLResponse)
 def home():return (ROOT/'index.html').read_text(encoding='utf-8')
 @app.post('/api/parse')
