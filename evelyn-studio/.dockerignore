@@ -1,0 +1,6 @@
+exports
+ephemeris-data
+__pycache__
+.git
+.env
+*.zip

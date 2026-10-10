@@ -1,0 +1,384 @@
+[
+  {
+    "name": "annotated-doc",
+    "version": "0.0.5",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "anyio",
+    "version": "4.15.1",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "cattrs",
+    "version": "26.2.1",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "certifi",
+    "version": "2026.7.22",
+    "license_expression": null,
+    "license_field": "MPL-2.0",
+    "license_classifiers": [
+      "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"
+    ]
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.5.2",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": []
+  },
+  {
+    "name": "click",
+    "version": "8.5.0",
+    "license_expression": "BSD-3-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "colorama",
+    "version": "0.4.6",
+    "license_expression": null,
+    "license_field": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ]
+  },
+  {
+    "name": "defusedxml",
+    "version": "0.7.1",
+    "license_expression": null,
+    "license_field": "PSFL",
+    "license_classifiers": [
+      "License :: OSI Approved :: Python Software Foundation License"
+    ]
+  },
+  {
+    "name": "fastapi",
+    "version": "0.143.0",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "greenlet",
+    "version": "3.5.6",
+    "license_expression": "MIT AND PSF-2.0",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9",
+    "license_expression": "BSD-3-Clause",
+    "license_field": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ]
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1",
+    "license_expression": null,
+    "license_field": "BSD-3-Clause",
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ]
+  },
+  {
+    "name": "idna",
+    "version": "3.20",
+    "license_expression": "BSD-3-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "iniconfig",
+    "version": "2.3.1",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "jplephem",
+    "version": "2.24",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": []
+  },
+  {
+    "name": "kerykeion",
+    "version": "6.0.5",
+    "license_expression": null,
+    "license_field": "AGPL-3.0",
+    "license_classifiers": [
+      "License :: OSI Approved :: GNU Affero General Public License v3"
+    ]
+  },
+  {
+    "name": "libephemeris",
+    "version": "3.2.2",
+    "license_expression": "AGPL-3.0-only",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "numpy",
+    "version": "2.5.3",
+    "license_expression": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "opentelemetry-api",
+    "version": "1.45.1",
+    "license_expression": "Apache-2.0",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "packaging",
+    "version": "26.3",
+    "license_expression": "Apache-2.0 OR BSD-2-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "pip",
+    "version": "25.0.1",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "platformdirs",
+    "version": "4.12.4",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "playwright",
+    "version": "1.63.0",
+    "license_expression": "Apache-2.0",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "pluggy",
+    "version": "1.6.0",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "pydantic",
+    "version": "2.14.0",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "pydantic_core",
+    "version": "2.50.0",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "pyee",
+    "version": "13.0.1",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "pyerfa",
+    "version": "2.0.1.5",
+    "license_expression": null,
+    "license_field": "BSD 3-Clause License",
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ]
+  },
+  {
+    "name": "Pygments",
+    "version": "2.21.0",
+    "license_expression": "BSD-2-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "pysweph",
+    "version": "2.10.3.6",
+    "license_expression": null,
+    "license_field": "/* Copyright (C) 1997 - 2021 Astrodienst AG, Switzerland.  All rights reserved.\n\n  License conditions\n  ------------------\n\n  This file is part of Swiss Ephemeris.\n\n  Swiss Ephemeris is distributed with NO WARRANTY OF ANY KIND.  No author\n  or distributor accepts any responsibility for the consequences of using it,\n  or for whether it serves any particular purpose or works at all, unless he\n  or she says so in writing.\n\n  Swiss Ephemeris is made available by its authors under a dual licensing\n  system. The software developer, who uses any part of Swiss Ephemeris\n  in his or her software, must choose between one of the two license models,\n  which are\n  a) GNU Affero General Public License (AGPL)\n  b) Swiss Ephemeris Professional License\n\n  The choice must be made before the software developer distributes software\n  containing parts of Swiss Ephemeris to others, and before any public\n  service using the developed software is activated.\n\n  If the developer choses the AGPL software license, he or she must fulfill\n  the conditions of that license, which includes the obligation to place his\n  or her whole software project under the AGPL or a compatible license.\n  See https://www.gnu.org/licenses/agpl-3.0.html\n\n  If the developer choses the Swiss Ephemeris Professional license,\n  he must follow the instructions as found in http://www.astro.com/swisseph/\n  and purchase the Swiss Ephemeris Professional Edition from Astrodienst\n  and sign the corresponding license contract.\n\n  The License grants you the right to use, copy, modify and redistribute\n  Swiss Ephemeris, but only under certain conditions described in the License.\n  Among other things, the License requires that the copyright notices and\n  this notice be preserved on all copies.\n\n  Authors of the Swiss Ephemeris: Dieter Koch and Alois Treindl\n\n  The authors of Swiss Ephemeris have no control or influence over any of\n  the derived works, i.e. over software or services created by other\n  programmers which use Swiss Ephemeris functions.\n\n  The names of the authors or of the copyright holder (Astrodienst) must not\n  be used for promoting any software, product or service which uses or contains\n  the Swiss Ephemeris. This copyright notice is the ONLY place where the\n  names of the authors can legally appear, except in cases where they have\n  given special permission in writing.\n*/\n",
+    "license_classifiers": []
+  },
+  {
+    "name": "pytest",
+    "version": "9.1.1",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "requests",
+    "version": "2.34.2",
+    "license_expression": null,
+    "license_field": "Apache-2.0",
+    "license_classifiers": [
+      "License :: OSI Approved :: Apache Software License"
+    ]
+  },
+  {
+    "name": "requests-cache",
+    "version": "1.3.3",
+    "license_expression": "BSD-2-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "sgp4",
+    "version": "2.27",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "simple-ascii-tables",
+    "version": "1.0.1",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: GNU General Public License (GPL)",
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "skyfield",
+    "version": "1.55",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "skyfield-data",
+    "version": "7.0.0",
+    "license_expression": null,
+    "license_field": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ]
+  },
+  {
+    "name": "starlette",
+    "version": "1.7.0",
+    "license_expression": "BSD-3-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "svg-polish",
+    "version": "1.0.0",
+    "license_expression": "Apache-2.0",
+    "license_field": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: Apache Software License"
+    ]
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0",
+    "license_expression": "PSF-2.0",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "tzdata",
+    "version": "2026.5",
+    "license_expression": null,
+    "license_field": "Apache-2.0",
+    "license_classifiers": []
+  },
+  {
+    "name": "urllib3",
+    "version": "2.8.0",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "url-normalize",
+    "version": "3.0.1",
+    "license_expression": "MIT",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.54.0",
+    "license_expression": "BSD-3-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  },
+  {
+    "name": "zstandard",
+    "version": "0.25.0",
+    "license_expression": "BSD-3-Clause",
+    "license_field": null,
+    "license_classifiers": []
+  }
+]
