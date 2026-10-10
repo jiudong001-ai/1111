@@ -30,7 +30,9 @@ class Birth(BaseModel):
     longitude:float=Field(ge=-180,le=180)
     timezone:str
     fold:int|None=Field(default=None,ge=0,le=1)
-class Calc(BaseModel):people:list[Birth]=Field(min_length=1,max_length=2)
+class Calc(BaseModel):
+    people:list[Birth]=Field(min_length=1,max_length=2)
+    staff_name:str=Field(default='',max_length=80)
 @app.middleware('http')
 async def same_origin(request:Request,call_next):
     allowed={'127.0.0.1:8877','localhost:8877','testserver'}
@@ -118,15 +120,15 @@ async def run(body:Calc):
         try:
             for name,svg in svgs.items():
                 path=folder/(name+'.svg');path.write_text(svg,encoding='utf8');await rasterize(path,folder/(name+'.png'),True)
-            await generate_cards(folder,sections,r)
+            await generate_cards(folder,sections,r,body.staff_name.strip())
         except Exception as e:raise HTTPException(500,'Calculation saved, but export failed: '+str(e))
         shutil.make_archive(str(EXPORTS/token),'zip',folder)
         return {'id':token,'warnings':r['warnings'],'sections':sections,'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir()],'bundle':f'/exports/{token}.zip'}
-async def generate_cards(folder,sections,report):
+async def generate_cards(folder,sections,report,staff_name=''):
     from datetime import datetime
     day=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
     for kind in ('love','daily'):
-        path=folder/(kind+'-card.html');path.write_text(relationship_card(report) if kind=='love' else card(kind,[s for s in sections if not s.get('kind')],day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
+        path=folder/(kind+'-card.html');path.write_text(relationship_card(report,staff_name) if kind=='love' else card(kind,[s for s in sections if not s.get('kind')],day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
 @app.post('/api/daily')
 async def daily():
     async with LOCK:

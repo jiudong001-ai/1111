@@ -3,7 +3,7 @@ from html import escape
 
 STYLE = '''body{margin:0;background:#fcf8ef;color:#40223d}.card{box-sizing:border-box;width:1080px;min-height:1350px;padding:76px 82px;background:radial-gradient(ellipse at 100% 0%,#efd9dc,transparent 48%),#fcf8ef;border:12px solid #e9ddc8;font-family:Georgia,serif}.eyebrow{font:18px Arial,sans-serif;letter-spacing:4px;color:#806571;text-transform:uppercase}.line{height:1px;background:#b89c68;margin:28px 0 36px}h1{font-weight:400;font-size:68px;line-height:1.1;margin:0 0 24px}.intro{font-size:27px;line-height:1.5;margin-bottom:38px}h2{font:600 18px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#80586c;margin:30px 0 14px}p{font-size:27px;line-height:1.5;margin:0 0 16px}.basis{font:18px/1.5 Arial,sans-serif;color:#786875}.prompt{background:#f1e4e1;border-left:4px solid #b89c68;padding:20px 26px;margin-top:34px}.prompt p{font-size:29px}footer{font:17px/1.5 Arial,sans-serif;color:#786875;margin-top:38px}'''
 
-def relationship_card(report):
+def relationship_card(report, staff_name=''):
     aspects = (report.get('synastry') or {}).get('aspects', [])
     relevant = [a for a in aspects if a.get('p1_name') in {'Sun','Moon','Venus','Mars','Mercury','Saturn'} and a.get('p2_name') in {'Sun','Moon','Venus','Mars','Mercury','Saturn'} and a.get('aspect') in {'conjunction','trine','sextile','square','opposition'}]
     relevant.sort(key=lambda a: abs(a['orbit']))
@@ -24,8 +24,9 @@ def relationship_card(report):
     else:
         intro = 'Your charts offer a starting point for a conversation. What matters most is how you show up for each other in everyday life.'
         limitation = 'Based on selected synastry aspects. Astrology offers reflection; it cannot tell you someone’s private feelings or promise an outcome.'
+    signature = '<div style="margin-top:30px;border-top:1px solid #b89c68;padding-top:24px"><p style="font-size:23px">Take what resonates, and give yourself room to reflect.</p>'+('<p style="font-size:23px;margin-bottom:6px">With care,</p><p style="font-size:34px;font-style:italic;overflow-wrap:anywhere">'+escape(staff_name.strip())+'</p>' if staff_name.strip() else '')+'</div>'
     body = ''.join('<h2>'+escape(h)+'</h2><p>'+escape(t)+'</p>'+('<div class="basis">'+escape(b)+'</div>' if b else '') for h,t,b in blocks)
-    return '<!doctype html><html lang="en-US"><meta charset="utf-8"><style>'+STYLE+'</style><main class="card"><div class="eyebrow">Relationship insights</div><div class="line"></div><h1>Make room for<br>a real conversation.</h1><p class="intro">'+escape(intro)+'</p>'+body+'<h2>One small next step</h2><p>Share one thing that helps you feel cared for, then ask what that looks like for the other person.</p><div class="prompt"><h2>A question for you</h2><p>Which feels closer to your experience right now: finding connection, or working through different needs?</p></div><footer>'+escape(limitation)+'</footer></main></html>'
+    return '<!doctype html><html lang="en-US"><meta charset="utf-8"><style>'+STYLE+'</style><main class="card"><div class="eyebrow">Relationship insights</div><div class="line"></div><h1>Make room for<br>a real conversation.</h1><p class="intro">'+escape(intro)+'</p>'+body+'<h2>One small next step</h2><p>Share one thing that helps you feel cared for, then ask what that looks like for the other person.</p><div class="prompt"><h2>A question for you</h2><p>Which feels closer to your experience right now: finding connection, or working through different needs?</p></div>'+signature+'<footer>'+escape(limitation)+'</footer></main></html>'
 
 def basis(a):
     # Owners come from the v6 aspect model, not the order of the planet names.
