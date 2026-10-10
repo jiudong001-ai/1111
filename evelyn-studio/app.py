@@ -30,6 +30,8 @@ class Birth(BaseModel):
     longitude:float=Field(ge=-180,le=180)
     timezone:str
     fold:int|None=Field(default=None,ge=0,le=1)
+class DailyInput(BaseModel):
+    staff_name:str=Field(default='',max_length=80)
 class Calc(BaseModel):
     people:list[Birth]=Field(min_length=1,max_length=2)
     staff_name:str=Field(default='',max_length=80)
@@ -128,11 +130,11 @@ async def generate_cards(folder,sections,report,staff_name=''):
     from datetime import datetime
     day=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
     for kind in ('love','daily'):
-        path=folder/(kind+'-card.html');path.write_text(relationship_card(report,staff_name) if kind=='love' else card(kind,[s for s in sections if not s.get('kind')],day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
+        path=folder/(kind+'-card.html');path.write_text(relationship_card(report,staff_name) if kind=='love' else card(kind,[s for s in sections if not s.get('kind')],day,staff_name),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
 @app.post('/api/daily')
-async def daily():
+async def daily(body:DailyInput=DailyInput()):
     async with LOCK:
         token=secrets.token_hex(12);folder=EXPORTS/token;folder.mkdir()
         from datetime import datetime
-        path=folder/'daily-card.html';path.write_text(card('daily',[],datetime.now(ZoneInfo('America/New_York')).date().isoformat()),encoding='utf8');await rasterize(path,folder/'daily-card.png')
+        path=folder/'daily-card.html';path.write_text(card('daily',[],datetime.now(ZoneInfo('America/New_York')).date().isoformat(),body.staff_name.strip()),encoding='utf8');await rasterize(path,folder/'daily-card.png')
         return {'files':[f'/exports/{token}/daily-card.png']}
