@@ -1,0 +1,176 @@
+{
+  "series": "Daily Spiritual Guidance",
+  "text_color": "#413047",
+  "gold": "#C3A06B",
+  "disclaimer": "Lucky colors and numbers are playful inspiration, not predictions.",
+  "days": [
+    {
+      "weekday": "Monday",
+      "theme": "Daily Spiritual Guidance",
+      "main": "#C6B4DE",
+      "background": "#F7E8E2",
+      "art": "lake",
+      "lucky_color": "Soft Lavender",
+      "style": "Pair a soft lavender cardigan with cream jeans and gold earrings.",
+      "messages": [
+        "You can give a decision your full attention without rushing it. Make a little room for quiet, and notice what feels steady beneath the pressure.",
+        "Begin with the part of today you can shape. A slower morning, a clear boundary, or one honest choice can help you feel more grounded.",
+        "Clarity does not always arrive all at once. Set down one unnecessary expectation today, and let your next step be small enough to feel manageable."
+      ],
+      "love": [
+        "Let a caring conversation unfold without asking it to settle everything.",
+        "Ask for the support you need instead of hoping someone guesses.",
+        "Notice who makes space for your voice, even when you disagree."
+      ],
+      "affirmations": [
+        "I can move thoughtfully without having every answer.",
+        "My pace can be gentle and still carry me forward.",
+        "I give myself room to notice what matters."
+      ]
+    },
+    {
+      "weekday": "Tuesday",
+      "theme": "Love Insight",
+      "main": "#E6B6C6",
+      "background": "#F8EBE6",
+      "art": "rose",
+      "lucky_color": "Dusty Rose",
+      "style": "Wear a dusty rose tee with denim and comfortable flats.",
+      "messages": [
+        "Warmth and boundaries can belong in the same conversation. Say what matters to you with kindness, and leave room to hear a different perspective.",
+        "Being openhearted does not mean making yourself endlessly available. Choose a way to connect today that honors both your affection and your need for space.",
+        "Care is easier to recognize when it becomes concrete. Think about the small gestures that help you feel understood, and share one without turning it into a test."
+      ],
+      "love": [
+        "Look for mutual effort, rather than trying to earn someone\u2019s attention.",
+        "Share a preference gently; your needs deserve a place in the conversation.",
+        "A welcome gesture matters more than a dramatic declaration."
+      ],
+      "affirmations": [
+        "I can offer care without abandoning my own needs.",
+        "I deserve relationships where consideration goes both ways.",
+        "I let affection and self-respect grow together."
+      ]
+    },
+    {
+      "weekday": "Wednesday",
+      "theme": "Today's Energy",
+      "main": "#AAB9DE",
+      "background": "#E8E3F5",
+      "art": "moon",
+      "lucky_color": "Moonlight Blue",
+      "style": "Try a moonlight blue shirt with neutral trousers and sneakers.",
+      "messages": [
+        "Check in with your actual capacity before filling the day. You may need a little less noise and a little more space between commitments.",
+        "Your attention is a resource worth protecting. Choose one task to focus on, and let a brief pause help you return with a clearer mind.",
+        "A busy mind can make every request feel urgent. Separate what needs your attention now from what can wait, and take your day one piece at a time."
+      ],
+      "love": [
+        "Choose a moment when you both have room to listen.",
+        "A short, honest check-in can be kinder than a distracted conversation.",
+        "Let someone know when you need a pause, rather than disappearing."
+      ],
+      "affirmations": [
+        "I can honor my capacity without apologizing for it.",
+        "I choose where my attention goes.",
+        "A pause helps me return to what matters."
+      ]
+    },
+    {
+      "weekday": "Thursday",
+      "theme": "Affirmation",
+      "main": "#E8D9C3",
+      "background": "#F9F3EA",
+      "art": "light",
+      "lucky_color": "Champagne Beige",
+      "style": "Choose a champagne beige knit with dark jeans and loafers.",
+      "messages": [
+        "Speak to yourself as someone whose effort deserves respect. You can acknowledge what needs work without turning a difficult moment into a verdict on your worth.",
+        "You do not need to feel perfectly confident to make a thoughtful choice. Let a believable, kind sentence support you while you take the next step.",
+        "Notice the standard you are holding yourself to today. If it leaves no room for learning, soften it enough to make honest progress possible."
+      ],
+      "love": [
+        "You can ask for reassurance without making yourself smaller.",
+        "Accept a kind gesture without feeling you must immediately repay it.",
+        "Let your words make room for both tenderness and truth."
+      ],
+      "affirmations": [
+        "I am allowed to learn without questioning my worth.",
+        "I can be kind to myself while making changes.",
+        "My needs are worthy of thoughtful attention."
+      ]
+    },
+    {
+      "weekday": "Friday",
+      "theme": "Focus for Today",
+      "main": "#B9CEBF",
+      "background": "#F1F1E8",
+      "art": "leaves",
+      "lucky_color": "Sage Green",
+      "style": "Add a sage green overshirt to a white tee and jeans.",
+      "messages": [
+        "Choose one thing you want to finish before the weekend. Give it a realistic amount of time, and let enough be enough when you reach it.",
+        "Bring your attention back to what is within reach. A cleared surface, a short walk, or a completed task can create a useful sense of space.",
+        "Today\u2019s focus can be practical rather than impressive. Pick a small action that supports tomorrow\u2019s ease, and give yourself credit for following through."
+      ],
+      "love": [
+        "Keep one small promise, and notice the trust that consistency supports.",
+        "Make a simple plan together that fits both your schedules.",
+        "Offer practical help, but ask before deciding what someone needs."
+      ],
+      "affirmations": [
+        "Small, steady actions deserve my respect.",
+        "I can focus on one useful thing at a time.",
+        "I choose progress that fits the life I actually have."
+      ]
+    },
+    {
+      "weekday": "Saturday",
+      "theme": "Ritual Tip",
+      "main": "#EBC2B3",
+      "background": "#F8EAE2",
+      "art": "candle",
+      "lucky_color": "Warm Peach",
+      "style": "Wear a warm peach top with relaxed linen pants or denim.",
+      "messages": [
+        "Make a quiet ritual from something ordinary: wash your hands slowly, pour a favorite tea, or open a window. Let the moment belong to you.",
+        "Create a gentle transition between doing and resting. Put your phone aside for a few minutes, stretch your shoulders, and notice the room around you.",
+        "A ritual does not need special objects to feel meaningful. Choose one familiar action, do it with attention, and let yourself be present for its simple comfort."
+      ],
+      "love": [
+        "Invite someone into a simple moment, without pressure to make it special.",
+        "Let shared quiet count as connection when it feels comfortable to both.",
+        "Ask what helps your partner unwind; the answer may differ from yours."
+      ],
+      "affirmations": [
+        "Rest can be simple, ordinary, and fully mine.",
+        "I can make room for comfort without earning it first.",
+        "I let small rituals bring me back to the present."
+      ]
+    },
+    {
+      "weekday": "Sunday",
+      "theme": "Intuition Message",
+      "main": "#9C8AB8",
+      "background": "#DED4ED",
+      "art": "lotus",
+      "lucky_color": "Dreamy Plum",
+      "style": "Pair a dreamy plum sweater with cream pants and understated jewelry.",
+      "messages": [
+        "Notice the feeling that keeps returning, then ask what it might need. You can listen to yourself while still checking the facts before making a decision.",
+        "Give your inner voice a little quiet, without asking it to predict the future. Write down what feels important, and revisit it when you feel rested.",
+        "Your first impression can be a starting point rather than a final answer. Stay curious, gather what you need to know, and let reflection guide your next choice."
+      ],
+      "love": [
+        "Check an assumption with a gentle question before treating it as truth.",
+        "Listen to your discomfort, then seek clarity rather than guessing someone\u2019s motives.",
+        "Trust yourself to ask for what you need to understand."
+      ],
+      "affirmations": [
+        "I can listen inward and stay open to new information.",
+        "My feelings deserve attention, and my choices deserve care.",
+        "I make space for reflection before deciding."
+      ]
+    }
+  ]
+}

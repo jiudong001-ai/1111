@@ -11,6 +11,7 @@ from intake import parse,city_search_name
 from engine import calculate
 from reading import reading,card
 from relationship_card import relationship_card
+from daily_card_generator import DailyCardGenerator
 from bilingual import enrich,report_html
 import httpx
 
@@ -32,6 +33,14 @@ class Birth(BaseModel):
     fold:int|None=Field(default=None,ge=0,le=1)
 class DailyInput(BaseModel):
     staff_name:str=Field(default='',max_length=80)
+class DailyDraftRequest(BaseModel):
+    start:date|None=None
+    count:int=Field(default=1,ge=1,le=7)
+    revision:int=Field(default=0,ge=0,le=10000)
+class DailyPreviewRequest(BaseModel):
+    draft:dict
+class DailyExportRequest(BaseModel):
+    drafts:list[dict]=Field(min_length=1,max_length=7)
 class Calc(BaseModel):
     people:list[Birth]=Field(min_length=1,max_length=2)
     staff_name:str=Field(default='',max_length=80)
@@ -129,12 +138,41 @@ async def run(body:Calc):
 async def generate_cards(folder,sections,report,staff_name=''):
     from datetime import datetime
     day=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
-    for kind in ('love','daily'):
-        path=folder/(kind+'-card.html');path.write_text(relationship_card(report,staff_name) if kind=='love' else card(kind,[s for s in sections if not s.get('kind')],day,staff_name),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
+    path=folder/'love-card.html';path.write_text(relationship_card(report,staff_name),encoding='utf8');await rasterize(path,folder/'love-card.png')
+    await DailyCardGenerator().export([DailyCardGenerator().draft(day)],folder)
+    shutil.copyfile(folder/(day+'-feed.png'),folder/'daily-card.png')
+    shutil.copyfile(folder/(day+'-feed.html'),folder/'daily-card.html')
 @app.post('/api/daily')
 async def daily(body:DailyInput=DailyInput()):
     async with LOCK:
         token=secrets.token_hex(12);folder=EXPORTS/token;folder.mkdir()
         from datetime import datetime
-        path=folder/'daily-card.html';path.write_text(card('daily',[],datetime.now(ZoneInfo('America/New_York')).date().isoformat(),body.staff_name.strip()),encoding='utf8');await rasterize(path,folder/'daily-card.png')
-        return {'files':[f'/exports/{token}/daily-card.png']}
+        day=datetime.now(ZoneInfo('America/New_York')).date()
+        await DailyCardGenerator().export([DailyCardGenerator().draft(day)],folder)
+        return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.suffix=='.png']}
+
+@app.get('/daily-studio',response_class=HTMLResponse)
+def daily_studio():return (ROOT/'daily_studio.html').read_text(encoding='utf8')
+@app.post('/api/daily/drafts')
+def daily_drafts(body:DailyDraftRequest):
+    from datetime import datetime,timedelta
+    start=body.start or datetime.now(ZoneInfo('America/New_York')).date()
+    g=DailyCardGenerator()
+    return {'drafts':[g.draft(start+timedelta(days=i),body.revision) for i in range(body.count)]}
+@app.post('/api/daily/preview')
+def daily_preview(body:DailyPreviewRequest):
+    try:return {'html':DailyCardGenerator().html(body.draft)}
+    except (ValueError,KeyError,TypeError) as e:raise HTTPException(422,str(e))
+@app.post('/api/daily/export')
+async def daily_export(body:DailyExportRequest):
+    g=DailyCardGenerator()
+    try:
+        for d in body.drafts:g.html(d)
+        if len({d['date'] for d in body.drafts})!=len(body.drafts):raise ValueError('Use different dates for batch export')
+    except (ValueError,KeyError,TypeError) as e:raise HTTPException(422,str(e))
+    async with LOCK:
+        token=secrets.token_hex(12);folder=EXPORTS/token
+        try:await g.export(body.drafts,folder)
+        except ValueError as e:raise HTTPException(422,str(e))
+        shutil.make_archive(str(EXPORTS/token),'zip',folder)
+        return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.suffix=='.png'],'bundle':f'/exports/{token}.zip'}
