@@ -10,6 +10,7 @@ from playwright.async_api import async_playwright
 from intake import parse,city_search_name
 from engine import calculate
 from reading import reading,card
+from relationship_card import relationship_card
 from bilingual import enrich,report_html
 import httpx
 
@@ -117,15 +118,15 @@ async def run(body:Calc):
         try:
             for name,svg in svgs.items():
                 path=folder/(name+'.svg');path.write_text(svg,encoding='utf8');await rasterize(path,folder/(name+'.png'),True)
-            await generate_cards(folder,sections)
+            await generate_cards(folder,sections,r)
         except Exception as e:raise HTTPException(500,'Calculation saved, but export failed: '+str(e))
         shutil.make_archive(str(EXPORTS/token),'zip',folder)
         return {'id':token,'warnings':r['warnings'],'sections':sections,'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir()],'bundle':f'/exports/{token}.zip'}
-async def generate_cards(folder,sections):
+async def generate_cards(folder,sections,report):
     from datetime import datetime
     day=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
     for kind in ('love','daily'):
-        path=folder/(kind+'-card.html');path.write_text(card(kind,[s for s in sections if not s.get('kind')],day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
+        path=folder/(kind+'-card.html');path.write_text(relationship_card(report) if kind=='love' else card(kind,[s for s in sections if not s.get('kind')],day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
 @app.post('/api/daily')
 async def daily():
     async with LOCK:
