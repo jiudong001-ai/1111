@@ -8,7 +8,6 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from playwright.async_api import async_playwright
 from intake import parse,city_search_name
-from engine import calculate
 from reading import reading,card
 from relationship_card import relationship_card
 from daily_card_generator import DailyCardGenerator
@@ -19,6 +18,7 @@ ROOT=Path(__file__).parent
 EXPORTS=Path(os.environ.get('EXPORT_DIR',str(ROOT/'exports')));EXPORTS.mkdir(parents=True,exist_ok=True)
 app=FastAPI(title='Astrology Consultation Workbench')
 app.mount('/exports',StaticFiles(directory=EXPORTS),name='exports')
+app.mount('/daily-assets',StaticFiles(directory=ROOT/'daily_assets'),name='daily-assets')
 LOCK=asyncio.Lock()
 class Intake(BaseModel):text:str=Field(max_length=20000)
 class Birth(BaseModel):
@@ -113,6 +113,7 @@ async def rasterize(path,output,is_svg=False):
 
 @app.post('/api/calculate')
 async def run(body:Calc):
+    from engine import calculate
     people=[p.model_dump(mode='json') for p in body.people]
     for p in people:
         if p['birth_date']>date.today().isoformat():raise HTTPException(422,'Birth date is in the future')
@@ -149,7 +150,7 @@ async def daily(body:DailyInput=DailyInput()):
         from datetime import datetime
         day=datetime.now(ZoneInfo('America/New_York')).date()
         await DailyCardGenerator().export([DailyCardGenerator().draft(day)],folder)
-        return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.suffix=='.png']}
+        return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.name.endswith(('-feed.png','-story.png'))]}
 
 @app.get('/daily-studio',response_class=HTMLResponse)
 def daily_studio():return (ROOT/'daily_studio.html').read_text(encoding='utf8')
@@ -175,4 +176,4 @@ async def daily_export(body:DailyExportRequest):
         try:await g.export(body.drafts,folder)
         except ValueError as e:raise HTTPException(422,str(e))
         shutil.make_archive(str(EXPORTS/token),'zip',folder)
-        return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.suffix=='.png'],'bundle':f'/exports/{token}.zip'}
+        return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.name.endswith(('-feed.png','-story.png'))],'bundle':f'/exports/{token}.zip'}

@@ -1,5 +1,5 @@
 """Editorial daily reflection, deliberately independent of astrology calculations."""
-import json,re,os,hashlib,base64
+import json,re,os,hashlib,shutil
 from datetime import date,timedelta
 from pathlib import Path
 from html import escape
@@ -7,12 +7,13 @@ from playwright.async_api import async_playwright
 from spellchecker import SpellChecker
 
 ROOT=Path(__file__).parent
+SPELLING=SpellChecker(language='en')
+SPELLING.word_frequency.load_words(['overshirt','openhearted','loafers','cardigan','plum'])
 class DailyCardGenerator:
     def __init__(self):
         self.config=json.loads((ROOT/'daily_themes.json').read_text(encoding='utf8'))
         self.template=(ROOT/'daily_card_template.html').read_text(encoding='utf8')
-        self.spelling=SpellChecker(language='en')
-        self.spelling.word_frequency.load_words(['overshirt','openhearted','loafers','cardigan','plum'])
+        self.spelling=SPELLING
     def draft(self,day=None,revision=0):
         day=date.fromisoformat(day) if isinstance(day,str) else day or date.today()
         t=self.config['days'][day.weekday()];v=(day.toordinal()//7+revision)%3
@@ -31,34 +32,37 @@ class DailyCardGenerator:
         if len(d['lucky_color'])>40:raise ValueError('Color name is too long')
         if d['lucky_color'].lower() not in d['style'].lower():raise ValueError('Style advice must include the lucky color name')
         return d
-    def html(self,d,story=False):
+    def html(self,d,story=False,asset_source=None):
         self.validate(d)
         # Theme/palette/illustration come exclusively from the trusted weekday config.
         t=self.config['days'][date.fromisoformat(d['date']).weekday()]
         values={'FORMAT':'story' if story else '', 'MAIN':t['main'],'BACKGROUND':t['background'],'THEME':t['theme'],'DATE':date.fromisoformat(d['date']).strftime('%A · %B %d, %Y'),'HEADLINE':d['headline'],'MESSAGE':d['message'],'LOVE':d['love'],'COLOR':d['lucky_color'],'NUMBER':str(d['lucky_number']),'STYLE':d['style'],'AFFIRMATION':d['affirmation']}
         html=self.template
         for key,value in values.items():html=html.replace('{{'+key+'}}',escape(str(value)))
-        return html.replace('{{ART}}',self.illustration(t))
+        return html.replace('{{ART}}',escape(asset_source or self.illustration(t),quote=True))
     def illustration(self,t):
         # Generated photographic assets are local; all visible lettering remains HTML.
-        p=ROOT/'daily_assets'/f"{t['weekday'].lower()}.png"
-        return 'data:image/png;base64,'+base64.b64encode(p.read_bytes()).decode()
+        return '/daily-assets/'+t['weekday'].lower()+'.png'
     async def export(self,drafts,folder):
         folder=Path(folder);folder.mkdir(parents=True,exist_ok=True);checks=[]
         async with async_playwright() as pw:
-            browser=await pw.chromium.launch(**({'headless':True} if os.environ.get('BROWSER_ENGINE')=='bundled' else {'channel':'chrome','headless':True}))
+            browser=await pw.chromium.launch(args=['--disable-dev-shm-usage','--disable-gpu'],**({'headless':True} if os.environ.get('BROWSER_ENGINE')=='bundled' else {'channel':'chrome','headless':True}))
             try:
-                page=await browser.new_page(viewport={'width':1080,'height':1920},device_scale_factor=1)
                 for d in drafts:
+                    asset=date.fromisoformat(d['date']).strftime('%A').lower()+'.png'
+                    shutil.copyfile(ROOT/'daily_assets'/asset,folder/asset)
+                    context=await browser.new_context(viewport={'width':1080,'height':1920},device_scale_factor=1)
+                    page=await context.new_page()
                     for story in (False,True):
-                        stem=d['date']+('-story' if story else '-feed');html=self.html(d,story)
-                        (folder/(stem+'.html')).write_text(html,encoding='utf8')
-                        await page.set_content(html);await page.evaluate('document.fonts.ready')
+                        stem=d['date']+('-story' if story else '-feed');html=self.html(d,story,asset)
+                        path=folder/(stem+'.html');path.write_text(html,encoding='utf8')
+                        await page.goto(path.resolve().as_uri());await page.evaluate('document.fonts.ready')
                         await page.evaluate('''async () => {await document.querySelector('.backdrop').decode()}''')
                         issues=await page.evaluate('''() => {const card=document.querySelector('.card'),c=card.getBoundingClientRect();return [...document.querySelectorAll('.section,.section p,header,.theme,.foot')].filter(e=>{const r=e.getBoundingClientRect();return e.scrollHeight>e.clientHeight+1||e.scrollWidth>e.clientWidth+1||r.bottom>c.bottom-25||r.right>c.right-15}).map(e=>e.className||e.tagName)}''')
                         if issues:raise ValueError('Layout overflow: '+', '.join(issues))
                         await page.locator('.card').screenshot(path=str(folder/(stem+'.png')))
                         checks.append({'file':stem+'.png','width':1080,'height':1920 if story else 1350,'overflow':False})
+                    await context.close()
                 (folder/'drafts.json').write_text(json.dumps(drafts,indent=2,ensure_ascii=False),encoding='utf8')
                 (folder/'layout-checks.json').write_text(json.dumps(checks,indent=2),encoding='utf8')
             finally:await browser.close()
