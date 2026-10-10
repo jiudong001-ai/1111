@@ -69,8 +69,21 @@ async def places(q:str):
     if not 2<=len(q)<=120:raise HTTPException(422,'Enter a city')
     async with httpx.AsyncClient(timeout=20) as client:
         try:
-            r=await client.get('https://geocoding-api.open-meteo.com/v1/search',params={'name':city_search_name(q),'count':10,'language':'en','format':'json'});r.raise_for_status()
-            return [{'place':', '.join(str(v) for v in [x['name'],x.get('admin1'),x.get('country')] if v),'latitude':x['latitude'],'longitude':x['longitude'],'timezone':x['timezone']} for x in r.json().get('results',[]) if x.get('timezone')]
+            params={'name':q.split(',')[0].strip(),'count':10,'format':'json'}
+            from intake import city_search_name
+            params['name']=city_search_name(q)
+            responses=await asyncio.gather(*(client.get('https://geocoding-api.open-meteo.com/v1/search',params={**params,'language':lang}) for lang in ('en','zh')),return_exceptions=True)
+            r=responses[0]
+            if isinstance(r,Exception):raise r
+            r.raise_for_status()
+            translated=responses[1]
+            zh={x['id']:x for x in translated.json().get('results',[])} if not isinstance(translated,Exception) and translated.status_code==200 else {}
+            out=[]
+            for x in r.json().get('results',[]):
+                if not x.get('timezone'):continue
+                label=lambda row:', '.join(str(v) for v in [row['name'],row.get('admin1'),row.get('country')] if v)
+                out.append({'place':label(x),'place_zh':label(zh[x['id']]) if x['id'] in zh else '中文译名暂无','latitude':x['latitude'],'longitude':x['longitude'],'timezone':x['timezone']})
+            return out
         except Exception:raise HTTPException(503,'City lookup failed. Use verified coordinates and timezone in Advanced settings.')
 
 async def rasterize(path,output,is_svg=False):
