@@ -35,12 +35,14 @@ def parse(text, previous=None):
         if not clause.strip(): continue
         if re.search(r'\b(he|his|him|she|her|partner|boyfriend|girlfriend|husband|wife|ex)\b',clause,re.I): person='partner'
         elif re.search(r'\b(I|my|mine|me)\b',clause,re.I): person='client'
-        both=bool(re.search(r'\b(both|we were)\b',clause,re.I))
+        both=bool(re.search(r'\b(?:both|we\s+(?:were|was|are)\s+born|our\s+birthplace)\b',clause,re.I))
         targets=['client','partner'] if both else [person]
         for match in re.finditer(DATE,clause,re.I):
             v,s=date_value(match.group())
             for p in targets: add(p,'birth_date',v,clause,s)
         unknown=bool(re.search(r"(?:don't|do not|doesn't|does not) know.*(?:time)|(?:time.*unknown)|(?:unknown.*time)",clause,re.I))
+        if unknown and re.search(r'\b(?:the|our)\s+(?:birth\s+)?times\b',clause,re.I):
+            targets=['client','partner']
         tm=re.search(r'\b(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)\b|\b(\d{1,2}):(\d{2})\b',clause,re.I)
         if unknown:
             for p in targets: add(p,'birth_time',None,clause,'unknown')
