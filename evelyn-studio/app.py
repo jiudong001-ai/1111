@@ -10,6 +10,7 @@ from playwright.async_api import async_playwright
 from intake import parse,city_search_name
 from engine import calculate
 from reading import reading,card
+from bilingual import enrich,report_html
 import httpx
 
 ROOT=Path(__file__).parent
@@ -96,11 +97,9 @@ async def run(body:Calc):
         try:r,svgs=await asyncio.to_thread(calculate,people)
         except Exception as e:raise HTTPException(422,str(e))
         token=secrets.token_hex(12);folder=EXPORTS/token;folder.mkdir()
-        sections=reading(r);r['interpretation']={'language':'en-US','method':'deterministic chart-grounded symbolic draft','sections':sections}
+        sections=enrich(reading(r),any(p['time_accuracy']!='exact' for p in people));r['interpretation']={'language':'en-US','languages':['en-US','zh-CN'],'method':'deterministic chart-grounded symbolic draft','sections':sections}
         (folder/'report.json').write_text(json.dumps(r,indent=2,ensure_ascii=False),encoding='utf8')
-        html='<!doctype html><meta charset="utf-8"><style>body{max-width:850px;margin:60px auto;padding:20px;background:#fcf8ef;color:#3e173b;font:19px/1.7 Georgia}h1{font-weight:400}</style><h1>Evelyn Brooks · Detailed Reading</h1>'
-        from html import escape
-        html+=''.join('<h2>'+escape(s['title'])+'</h2><p>'+escape(s['text'])+'</p>' for s in sections)
+        html=report_html(sections)
         (folder/'reading.html').write_text(html,encoding='utf8')
         try:
             for name,svg in svgs.items():
@@ -113,7 +112,7 @@ async def generate_cards(folder,sections):
     from datetime import datetime
     day=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
     for kind in ('love','daily'):
-        path=folder/(kind+'-card.html');path.write_text(card(kind,sections,day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
+        path=folder/(kind+'-card.html');path.write_text(card(kind,[s for s in sections if not s.get('kind')],day),encoding='utf8');await rasterize(path,folder/(kind+'-card.png'))
 @app.post('/api/daily')
 async def daily():
     async with LOCK:
