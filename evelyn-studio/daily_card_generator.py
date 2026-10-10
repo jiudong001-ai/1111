@@ -1,5 +1,5 @@
 """Editorial daily reflection, deliberately independent of astrology calculations."""
-import json,re,os,hashlib
+import json,re,os,hashlib,base64
 from datetime import date,timedelta
 from pathlib import Path
 from html import escape
@@ -40,9 +40,9 @@ class DailyCardGenerator:
         for key,value in values.items():html=html.replace('{{'+key+'}}',escape(str(value)))
         return html.replace('{{ART}}',self.illustration(t))
     def illustration(self,t):
-        # Original local vector artwork: different compositions, not color swaps.
-        p=ROOT/'daily_assets'/f"{t['art']}.svg"
-        return p.read_text(encoding='utf8')
+        # Generated photographic assets are local; all visible lettering remains HTML.
+        p=ROOT/'daily_assets'/f"{t['weekday'].lower()}.png"
+        return 'data:image/png;base64,'+base64.b64encode(p.read_bytes()).decode()
     async def export(self,drafts,folder):
         folder=Path(folder);folder.mkdir(parents=True,exist_ok=True);checks=[]
         async with async_playwright() as pw:
@@ -54,6 +54,7 @@ class DailyCardGenerator:
                         stem=d['date']+('-story' if story else '-feed');html=self.html(d,story)
                         (folder/(stem+'.html')).write_text(html,encoding='utf8')
                         await page.set_content(html);await page.evaluate('document.fonts.ready')
+                        await page.evaluate('''async () => {await document.querySelector('.backdrop').decode()}''')
                         issues=await page.evaluate('''() => {const card=document.querySelector('.card'),c=card.getBoundingClientRect();return [...document.querySelectorAll('.section,.section p,header,.theme,.foot')].filter(e=>{const r=e.getBoundingClientRect();return e.scrollHeight>e.clientHeight+1||e.scrollWidth>e.clientWidth+1||r.bottom>c.bottom-25||r.right>c.right-15}).map(e=>e.className||e.tagName)}''')
                         if issues:raise ValueError('Layout overflow: '+', '.join(issues))
                         await page.locator('.card').screenshot(path=str(folder/(stem+'.png')))
