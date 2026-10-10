@@ -5,6 +5,12 @@ from datetime import datetime
 MONTHS = 'January February March April May June July August September October November December'.split()
 DATE = r'(?:\d{4}-\d{1,2}-\d{1,2}|\d{1,2}[/-]\d{1,2}[/-]\d{4}|(?:' + '|'.join(m[:3] + r'(?:' + m[3:] + ')?' for m in MONTHS) + r')\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}|\d{1,2}\s+(?:' + '|'.join(MONTHS) + r')\s+\d{4})'
 
+def city_search_name(place):
+    # Search cities without discarding the operator's original place evidence.
+    city=place.split(',')[0].strip()
+    states='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC'.split()
+    return re.sub(r'\s+(?:'+'|'.join(states)+r')$', '', city, flags=re.I)
+
 def date_value(raw):
     clean = re.sub(r'(\d)(st|nd|rd|th)', r'\1', raw, flags=re.I).replace(',', '')
     if re.fullmatch(r'\d{1,2}[/-]\d{1,2}[/-]\d{4}', clean):

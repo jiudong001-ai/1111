@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from playwright.async_api import async_playwright
-from intake import parse
+from intake import parse,city_search_name
 from engine import calculate
 from reading import reading,card
 import httpx
@@ -68,7 +68,7 @@ async def places(q:str):
     if not 2<=len(q)<=120:raise HTTPException(422,'Enter a city')
     async with httpx.AsyncClient(timeout=20) as client:
         try:
-            r=await client.get('https://geocoding-api.open-meteo.com/v1/search',params={'name':q.split(',')[0].strip(),'count':10,'language':'en','format':'json'});r.raise_for_status()
+            r=await client.get('https://geocoding-api.open-meteo.com/v1/search',params={'name':city_search_name(q),'count':10,'language':'en','format':'json'});r.raise_for_status()
             return [{'place':', '.join(str(v) for v in [x['name'],x.get('admin1'),x.get('country')] if v),'latitude':x['latitude'],'longitude':x['longitude'],'timezone':x['timezone']} for x in r.json().get('results',[]) if x.get('timezone')]
         except Exception:raise HTTPException(503,'City lookup failed. Use verified coordinates and timezone in Advanced settings.')
 

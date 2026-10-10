@@ -1,4 +1,11 @@
 from intake import parse
+from intake import city_search_name
+
+def test_state_abbreviation_city_query():
+    assert city_search_name('Dublin ga')=='Dublin'
+    assert city_search_name('New York NY')=='New York'
+    assert city_search_name('Dublin, Georgia, United States')=='Dublin'
+    assert city_search_name('Los Angeles')=='Los Angeles'
 
 def test_shared_place_with_informal_grammar():
     r=parse("Mine is January 3 1990. His is December 16 1992. His name is alex We was born in Dublin ga. I don't know the times")['people']
