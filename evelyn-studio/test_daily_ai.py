@@ -5,20 +5,20 @@ from daily_card_generator import DailyCardGenerator
 from daily_ai import generate
 
 def test_missing_key_does_not_call(tmp_path,monkeypatch):
-    monkeypatch.delenv('OPENAI_API_KEY',raising=False)
-    with pytest.raises(ValueError,match='OpenAI API'):asyncio.run(generate(date(2026,10,12),1,tmp_path/'ledger'))
+    monkeypatch.delenv('DEEPSEEK_API_KEY',raising=False)
+    with pytest.raises(ValueError,match='DeepSeek API'):asyncio.run(generate(date(2026,10,12),1,tmp_path/'ledger'))
 
 def test_structured_copy_and_limit(tmp_path,monkeypatch):
-    monkeypatch.setenv('OPENAI_API_KEY','fake-test-key')
-    monkeypatch.setenv('OPENAI_DAILY_CALL_LIMIT','1')
+    monkeypatch.setenv('DEEPSEEK_API_KEY','fake-test-key')
+    monkeypatch.setenv('DAILY_AI_CALL_LIMIT','1')
     d=DailyCardGenerator().draft(date(2026,10,12))
     copy={k:d[k] for k in ('headline','message','love','style','affirmation')}
     def handler(request):
         body=json.loads(request.content)
-        assert body['model']=='gpt-6-luna' and body['store'] is False
-        assert body['max_output_tokens']==600
+        assert body['model']=='deepseek-flash' and body['thinking']=={'type':'disabled'}
+        assert body['max_tokens']==600
         assert 'fake-test-key' not in request.content.decode()
-        return httpx.Response(200,json={'status':'completed','output':[{'content':[{'type':'output_text','text':json.dumps(copy)}]}]})
+        return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(copy)}}]})
     async def run():
         async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
             result=await generate(date(2026,10,12),1,tmp_path/'ledger',client)
