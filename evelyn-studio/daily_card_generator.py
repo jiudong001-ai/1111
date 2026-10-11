@@ -36,7 +36,7 @@ class DailyCardGenerator:
         self.validate(d)
         # Theme/palette/illustration come exclusively from the trusted weekday config.
         t=self.config['days'][date.fromisoformat(d['date']).weekday()]
-        values={'FORMAT':'story' if story else '', 'MAIN':t['main'],'BACKGROUND':t['background'],'THEME':t['theme'],'DATE':date.fromisoformat(d['date']).strftime('%A · %B %d, %Y'),'HEADLINE':d['headline'],'MESSAGE':d['message'],'LOVE':d['love'],'COLOR':d['lucky_color'],'NUMBER':str(d['lucky_number']),'STYLE':d['style'],'AFFIRMATION':d['affirmation']}
+        values={'FORMAT':'story' if story else '', 'MAIN':t['main'],'BACKGROUND':t['background'],'THEME':t['theme'],'DATE':date.fromisoformat(d['date']).strftime('%A · %B %d, %Y'),'HEADLINE':d['headline'],'MESSAGE':d['message'],'MESSAGEFONT':'26' if len(d['message'].split())>=24 else '28','LOVE':d['love'],'COLOR':d['lucky_color'],'NUMBER':str(d['lucky_number']),'STYLE':d['style'],'AFFIRMATION':d['affirmation']}
         html=self.template
         for key,value in values.items():html=html.replace('{{'+key+'}}',escape(str(value)))
         return html.replace('{{ART}}',escape(asset_source or self.illustration(t),quote=True))
@@ -67,3 +67,4 @@ class DailyCardGenerator:
                 (folder/'layout-checks.json').write_text(json.dumps(checks,indent=2),encoding='utf8')
             finally:await browser.close()
         return checks
+
