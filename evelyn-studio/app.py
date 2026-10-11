@@ -39,6 +39,9 @@ class DailyDraftRequest(BaseModel):
     revision:int=Field(default=0,ge=0,le=10000)
 class DailyPreviewRequest(BaseModel):
     draft:dict
+class DailyAIRequest(BaseModel):
+    day:date
+    revision:int=Field(default=0,ge=0,le=10000)
 class DailyExportRequest(BaseModel):
     drafts:list[dict]=Field(min_length=1,max_length=7)
 class Calc(BaseModel):
@@ -63,6 +66,11 @@ async def same_origin(request:Request,call_next):
     return response
 @app.get('/health')
 def health():return {'status':'ok'}
+@app.post('/api/daily/ai')
+async def daily_ai(body:DailyAIRequest):
+    from daily_ai import generate
+    try:return await generate(body.day,body.revision,ROOT/'.ai-trial-ledger.json')
+    except ValueError as e:raise HTTPException(422,str(e)) from None
 @app.get('/source')
 def source():
     archive=ROOT/'source.zip'
@@ -177,3 +185,4 @@ async def daily_export(body:DailyExportRequest):
         except ValueError as e:raise HTTPException(422,str(e))
         shutil.make_archive(str(EXPORTS/token),'zip',folder)
         return {'files':[f'/exports/{token}/{p.name}' for p in folder.iterdir() if p.name.endswith(('-feed.png','-story.png'))],'bundle':f'/exports/{token}.zip'}
+
